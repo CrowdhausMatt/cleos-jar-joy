@@ -2,16 +2,16 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface MoneyProps {
-  type: "swear" | "smart" | "roundup" | "forget" | "gold";
+  type: "money" | "bill" | "car" | "tax" | "gold";
   position: number;
   onFall: () => void;
 }
 
-const moneyIcons = {
-  swear: "💷",
-  smart: "💵",
-  roundup: "💶",
-  forget: "💴",
+const itemIcons = {
+  money: "💷",
+  bill: "📄",
+  car: "🚗",
+  tax: "📋",
   gold: "🪙",
 };
 
@@ -28,7 +28,7 @@ export const Money = ({ type, position, onFall }: MoneyProps) => {
       )}
       style={{ left: position }}
     >
-      {moneyIcons[type]}
+      {itemIcons[type]}
     </motion.div>
   );
 };

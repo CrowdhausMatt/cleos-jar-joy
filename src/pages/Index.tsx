@@ -6,35 +6,31 @@ import { Score } from "@/components/game/Score";
 import { GameOver } from "@/components/game/GameOver";
 import { toast } from "sonner";
 
-type MoneyType = "swear" | "smart" | "roundup" | "forget" | "gold";
+type ItemType = "money" | "bill" | "car" | "tax" | "gold";
 
-interface FallingMoney {
+interface FallingItem {
   id: number;
-  type: MoneyType;
+  type: ItemType;
   position: number;
 }
 
 const GAME_DURATION = 60;
-const JAR_WIDTH = 96; // 24rem
+const JAR_WIDTH = 96;
 const SPAWN_INTERVAL = 1000;
+const MOVE_STEP = 50;
 
 const Index = () => {
   const [score, setScore] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
-  const [fallingMoney, setFallingMoney] = useState<FallingMoney[]>([]);
-  const [jarPositions, setJarPositions] = useState({
-    swear: 100,
-    smart: 300,
-    roundup: 500,
-    forget: 700,
-  });
+  const [fallingItems, setFallingItems] = useState<FallingItem[]>([]);
+  const [jarPosition, setJarPosition] = useState(window.innerWidth / 2);
 
-  const spawnMoney = () => {
-    const types: MoneyType[] = ["swear", "smart", "roundup", "forget"];
+  const spawnItem = () => {
+    const types: ItemType[] = ["money", "bill", "car", "tax"];
     const randomType = Math.random() < 0.1 ? "gold" : types[Math.floor(Math.random() * types.length)];
     const randomPosition = Math.random() * (window.innerWidth - 50);
 
-    setFallingMoney((prev) => [
+    setFallingItems((prev) => [
       ...prev,
       {
         id: Date.now(),
@@ -44,40 +40,43 @@ const Index = () => {
     ]);
   };
 
-  const handleMoneyFall = (money: FallingMoney) => {
+  const handleItemFall = (item: FallingItem) => {
     const jarWidth = JAR_WIDTH;
-    let caught = false;
-
-    Object.entries(jarPositions).forEach(([jarType, jarPosition]) => {
-      if (
-        money.position > jarPosition - jarWidth / 2 &&
-        money.position < jarPosition + jarWidth / 2
-      ) {
-        if (money.type === "gold") {
-          setScore((prev) => prev + 20);
-          toast("Double points! +20");
-        } else if (money.type === jarType) {
-          setScore((prev) => prev + 10);
-          toast("Great catch! +10");
-        } else {
-          setScore((prev) => Math.max(0, prev - 5));
-          toast("Wrong jar! -5");
-        }
-        caught = true;
+    
+    if (
+      item.position > jarPosition - jarWidth / 2 &&
+      item.position < jarPosition + jarWidth / 2
+    ) {
+      if (item.type === "gold") {
+        setScore((prev) => prev + 20);
+        toast("Double points! +20");
+      } else if (item.type === "money") {
+        setScore((prev) => prev + 10);
+        toast("Great catch! +10");
+      } else {
+        setScore((prev) => Math.max(0, prev - 5));
+        toast("Ouch! Don't catch that! -5");
       }
-    });
-
-    if (!caught) {
-      toast("Money missed!");
     }
 
-    setFallingMoney((prev) => prev.filter((m) => m.id !== money.id));
+    setFallingItems((prev) => prev.filter((m) => m.id !== item.id));
+  };
+
+  const handleMove = (direction: "left" | "right") => {
+    setJarPosition((prev) => {
+      const newPosition = direction === "left" 
+        ? prev - MOVE_STEP 
+        : prev + MOVE_STEP;
+      
+      // Keep jar within screen bounds
+      return Math.max(JAR_WIDTH/2, Math.min(window.innerWidth - JAR_WIDTH/2, newPosition));
+    });
   };
 
   useEffect(() => {
     if (isGameOver) return;
 
-    const interval = setInterval(spawnMoney, SPAWN_INTERVAL);
+    const interval = setInterval(spawnItem, SPAWN_INTERVAL);
     return () => clearInterval(interval);
   }, [isGameOver]);
 
@@ -87,7 +86,8 @@ const Index = () => {
 
   const handleRestart = () => {
     setScore(0);
-    setFallingMoney([]);
+    setFallingItems([]);
+    setJarPosition(window.innerWidth / 2);
     setIsGameOver(false);
   };
 
@@ -96,25 +96,19 @@ const Index = () => {
       <Score score={score} />
       <Timer duration={GAME_DURATION} onComplete={handleGameOver} />
 
-      {fallingMoney.map((money) => (
+      {fallingItems.map((item) => (
         <Money
-          key={money.id}
-          type={money.type}
-          position={money.position}
-          onFall={() => handleMoneyFall(money)}
+          key={item.id}
+          type={item.type}
+          position={item.position}
+          onFall={() => handleItemFall(item)}
         />
       ))}
 
-      {Object.entries(jarPositions).map(([type, position]) => (
-        <Jar
-          key={type}
-          type={type as "swear" | "smart" | "roundup" | "forget"}
-          position={position}
-          onDragEnd={(newPosition) =>
-            setJarPositions((prev) => ({ ...prev, [type]: newPosition }))
-          }
-        />
-      ))}
+      <Jar
+        position={jarPosition}
+        onMove={handleMove}
+      />
 
       {isGameOver && <GameOver score={score} onRestart={handleRestart} />}
     </div>
