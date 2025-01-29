@@ -21,6 +21,10 @@ export const Timer = ({ duration, onComplete }: TimerProps) => {
     return () => clearInterval(timer);
   }, [timeLeft, onComplete]);
 
+  useEffect(() => {
+    setTimeLeft(duration);
+  }, [duration]);
+
   return (
     <div className="absolute top-4 right-4 text-2xl font-bold text-game-primary">
       {timeLeft}s

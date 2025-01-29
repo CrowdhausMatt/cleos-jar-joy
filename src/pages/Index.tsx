@@ -6,7 +6,7 @@ import { Score } from "@/components/game/Score";
 import { GameOver } from "@/components/game/GameOver";
 import { toast } from "sonner";
 
-type ItemType = "money" | "bill" | "car" | "tax" | "gold";
+type ItemType = "money" | "bill" | "car" | "tax" | "gold" | "swear";
 
 interface FallingItem {
   id: number;
@@ -24,7 +24,8 @@ const itemDescriptions = {
   bill: "Utility Bill - Avoid!",
   car: "Car Insurance - Don't catch!",
   tax: "Tax Form - Run away!",
-  gold: "Golden Coin - Double points!"
+  gold: "Golden Coin - Double points!",
+  swear: "Caught a swear word!"
 };
 
 const Index = () => {
@@ -34,7 +35,7 @@ const Index = () => {
   const [jarPosition, setJarPosition] = useState(window.innerWidth / 2);
 
   const spawnItem = () => {
-    const types: ItemType[] = ["money", "bill", "car", "tax"];
+    const types: ItemType[] = ["money", "bill", "car", "tax", "swear"];
     const randomType = Math.random() < 0.1 ? "gold" : types[Math.floor(Math.random() * types.length)];
     const randomPosition = Math.random() * (window.innerWidth - 50);
 
@@ -59,7 +60,7 @@ const Index = () => {
           duration: 1500,
           className: "w-auto text-sm",
         });
-      } else if (item.type === "money") {
+      } else if (item.type === "money" || item.type === "swear") {
         setScore((prev) => prev + 10);
         toast(itemDescriptions[item.type], {
           duration: 1500,
