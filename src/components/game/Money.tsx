@@ -31,7 +31,7 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
   useEffect(() => {
     const animate = async () => {
       await controls.start({
-        y: window.innerHeight,
+        y: window.innerHeight + 100, // Animate past the bottom of the screen
         transition: { duration: 3, ease: "linear" }
       });
       
@@ -68,14 +68,15 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
         const jarLeft = jarPosition - jarWidth / 2;
         const jarRight = jarPosition + jarWidth / 2;
         const itemLeft = position;
-        const jarTopPosition = window.innerHeight - 150; // Jar's top position
+        const jarTopPosition = window.innerHeight - 150; // Jar's vertical position
         
         // Only trigger collision if the item is within jar's horizontal bounds AND
         // has reached the jar's vertical position
         if (itemLeft >= jarLeft && 
             itemLeft <= jarRight && 
-            latest.y >= jarTopPosition && 
-            latest.y <= jarTopPosition + 20) { // Small vertical collision window
+            latest.y >= jarTopPosition - 20 && // Start checking slightly above jar
+            latest.y <= jarTopPosition + 20 && // Small collision window
+            !isExploding) { // Prevent multiple collisions
           handleCollision();
         }
       }}
