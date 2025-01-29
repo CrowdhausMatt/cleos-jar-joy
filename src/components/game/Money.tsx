@@ -37,7 +37,6 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
         }
       });
       
-      // Only call onFall if we haven't collided with the jar
       if (!isExploding) {
         onFall();
       }
@@ -61,7 +60,12 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
         isExploding && "animate-explode",
         type === "gold" && "animate-coin-spin"
       )}
-      style={{ left: position }}
+      style={{ 
+        left: position,
+        border: "2px solid red", // Debug border
+        width: "48px",  // ITEM_WIDTH
+        height: "48px", // ITEM_HEIGHT
+      }}
       onUpdate={(latest: { y: number }) => {
         // Get jar dimensions and position
         const JAR_WIDTH = 96;
@@ -74,6 +78,21 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
         const ITEM_HEIGHT = 48;
         const itemX = position;
         const itemY = latest.y;
+
+        // Draw debug rectangle for jar (using DOM)
+        let debugJar = document.getElementById('debug-jar');
+        if (!debugJar) {
+          debugJar = document.createElement('div');
+          debugJar.id = 'debug-jar';
+          debugJar.style.position = 'absolute';
+          debugJar.style.border = '2px solid blue';
+          debugJar.style.pointerEvents = 'none';
+          document.body.appendChild(debugJar);
+        }
+        debugJar.style.left = `${jarX}px`;
+        debugJar.style.top = `${jarY}px`;
+        debugJar.style.width = `${JAR_WIDTH}px`;
+        debugJar.style.height = `${JAR_HEIGHT}px`;
 
         // Check for rectangle collision
         if (!isExploding &&
