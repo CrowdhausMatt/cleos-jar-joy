@@ -100,31 +100,30 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
         "absolute flex flex-col items-center gap-1",
         isExploding && "animate-explode",
         type === "gold" && "animate-coin-spin",
-        // Make border match background color
         "border-2 border-purple-50"
       )}
       style={{ 
         left: position,
-        backgroundColor: 'rgb(253, 242, 255, 0.1)' // Very subtle purple tint to match background
+        backgroundColor: 'rgb(253, 242, 255, 0.1)'
       }}
     >
       {type === "eye" ? (
         <img 
           src="/lovable-uploads/41558c01-221f-4001-8fca-454e147c3562.png"
           alt="Eye Test"
-          className="w-8 h-8 object-contain"
+          className="w-24 h-24 object-contain" // Increased from w-8 h-8 to w-24 h-24 (3x size)
         />
       ) : type === "flowers" ? (
         <img 
           src="/lovable-uploads/83cb02de-1f1c-4993-9d2f-73f279150e70.png"
           alt="Flowers"
-          className="w-8 h-8 object-contain"
+          className="w-24 h-24 object-contain" // Increased from w-8 h-8 to w-24 h-24 (3x size)
         />
       ) : type === "piggy" ? (
         <img 
           src="/lovable-uploads/f3c6022b-c68e-48b6-aae1-ddc7f15aa79d.png"
           alt="Piggy Bank"
-          className="w-8 h-8 object-contain"
+          className="w-24 h-24 object-contain" // Increased from w-8 h-8 to w-24 h-24 (3x size)
         />
       ) : (
         <span className="text-3xl">
