@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import { toast } from "sonner";
 
 interface MoneyProps {
   type: "money" | "bill" | "car" | "tax" | "gold" | "swear" | "eye" | "flowers" | "piggy";
@@ -50,7 +49,7 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
 
         if (hasCollided && !isExploding) {
           setIsExploding(true);
-          setTimeout(() => onFall(), 500);
+          onFall();
         }
       }
       

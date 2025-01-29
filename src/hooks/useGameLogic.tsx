@@ -35,7 +35,7 @@ export const itemPoints = {
 };
 
 const JAR_WIDTH = 96;
-const GAME_DURATION = 30; // 30 seconds game duration
+const GAME_DURATION = 30;
 
 export const useGameLogic = () => {
   const [score, setScore] = useState(0);
@@ -66,7 +66,7 @@ export const useGameLogic = () => {
     
     if (fallingItem.position >= jarLeft && fallingItem.position <= jarRight) {
       const pointsEarned = itemPoints[fallingItem.type];
-      setScore((prev) => prev + pointsEarned);
+      setScore(prevScore => prevScore + pointsEarned);
 
       toast(
         `${pointsEarned > 0 ? '+' : ''}${pointsEarned} points! ${itemDescriptions[fallingItem.type]}`,
@@ -141,7 +141,7 @@ export const useGameLogic = () => {
     timeLeft,
     setGameStarted: (started: boolean) => {
       setGameStarted(started);
-      setTimeLeft(GAME_DURATION); // Reset timer when game starts
+      setTimeLeft(GAME_DURATION);
     },
     setIsGameOver,
     handleItemFall,
