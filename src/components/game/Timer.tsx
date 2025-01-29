@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 
 interface TimerProps {
   duration: number;
@@ -8,33 +8,50 @@ interface TimerProps {
 
 export const Timer = ({ duration, onComplete, gameStarted }: TimerProps) => {
   const [timeLeft, setTimeLeft] = useState(duration);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleComplete = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
     onComplete();
   }, [onComplete]);
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-
     if (gameStarted) {
+      // Clear any existing interval
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      
+      // Reset timer to initial duration
       setTimeLeft(duration);
-      intervalId = setInterval(() => {
-        setTimeLeft((currentTime) => {
-          if (currentTime <= 1) {
-            clearInterval(intervalId);
+      
+      // Start new countdown
+      intervalRef.current = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
             handleComplete();
             return 0;
           }
-          return currentTime - 1;
+          return prevTime - 1;
         });
       }, 1000);
     } else {
+      // Clear interval when game is not started
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
       setTimeLeft(duration);
     }
 
+    // Cleanup function
     return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     };
   }, [gameStarted, duration, handleComplete]);
