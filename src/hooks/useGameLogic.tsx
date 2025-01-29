@@ -21,6 +21,19 @@ export const itemDescriptions = {
   piggy: "Savings"
 };
 
+// Point values for each item type
+export const itemPoints = {
+  gold: 20,    // Most valuable - special item
+  money: 10,   // Basic positive points
+  swear: 10,   // Catching swear words is good
+  flowers: 10, // Positive item
+  piggy: 10,   // Savings are good
+  eye: -5,     // Costs money
+  bill: -5,    // Bills reduce points
+  car: -5,     // Insurance costs
+  tax: -5      // Taxes reduce points
+};
+
 const JAR_WIDTH = 96;
 const GAME_DURATION = 30; // 30 seconds game duration
 
@@ -52,34 +65,16 @@ export const useGameLogic = () => {
     const jarRight = jarPosition + JAR_WIDTH / 2;
     
     if (fallingItem.position >= jarLeft && fallingItem.position <= jarRight) {
-      let pointsEarned = 0;
-      
-      switch(fallingItem.type) {
-        case "gold":
-          pointsEarned = 20;
-          break;
-        case "money":
-        case "swear":
-        case "flowers":
-        case "piggy":
-          pointsEarned = 10;
-          break;
-        case "eye":
-        case "bill":
-        case "car":
-        case "tax":
-          pointsEarned = -5;
-          break;
-        default:
-          pointsEarned = 0;
-      }
-
+      const pointsEarned = itemPoints[fallingItem.type];
       setScore((prev) => Math.max(0, prev + pointsEarned));
 
-      toast(`${pointsEarned > 0 ? '+' : ''}${pointsEarned} points! ${itemDescriptions[fallingItem.type]}`, {
-        duration: 1500,
-        className: `w-auto text-sm font-medium ${pointsEarned > 0 ? 'bg-green-500' : 'bg-red-500'} text-white`,
-      });
+      toast(
+        `${pointsEarned > 0 ? '+' : ''}${pointsEarned} points! ${itemDescriptions[fallingItem.type]}`,
+        {
+          duration: 1500,
+          className: `w-auto text-sm font-medium ${pointsEarned > 0 ? 'bg-green-500' : 'bg-red-500'} text-white`,
+        }
+      );
     }
     
     setFallingItems((prev) => prev.filter((item) => item.id !== fallingItem.id));
