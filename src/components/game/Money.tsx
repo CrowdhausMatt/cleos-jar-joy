@@ -48,59 +48,60 @@ const getPointsForItem = (type: MoneyProps["type"]) => {
 
 export const Money = ({ type, position, onFall, description }: MoneyProps) => {
   const [isExploding, setIsExploding] = useState(false);
-  const [itemBounds, setItemBounds] = useState({ top: 0, left: 0, bottom: 0, right: 0 });
 
   useEffect(() => {
-    const updateBounds = () => {
-      const element = document.getElementById(`falling-item-${type}-${position}`);
-      if (element) {
-        const bounds = element.getBoundingClientRect();
-        setItemBounds(bounds);
+    let animationFrameId: number;
+    
+    const checkCollision = () => {
+      const item = document.getElementById(`falling-item-${type}-${position}`);
+      const jar = document.querySelector('.jar-hitbox');
+      
+      if (item && jar) {
+        const itemBounds = item.getBoundingClientRect();
+        const jarBounds = jar.getBoundingClientRect();
         
-        const jar = document.querySelector('.jar-hitbox');
-        if (jar) {
-          const jarBounds = jar.getBoundingClientRect();
-          
-          if (checkCollision(bounds, jarBounds)) {
-            if (!isExploding) {
-              setIsExploding(true);
-              const points = getPointsForItem(type);
-              toast(
-                `${points > 0 ? '+' : ''}${points} points! ${description}`,
-                {
-                  duration: 1500,
-                  className: cn(
-                    "w-auto text-sm font-medium",
-                    points > 0 ? "bg-green-500" : "bg-red-500",
-                    "text-white"
-                  ),
-                }
-              );
-              setTimeout(() => onFall(), 500);
+        const hasCollided = !(
+          itemBounds.right < jarBounds.left ||
+          itemBounds.left > jarBounds.right ||
+          itemBounds.bottom < jarBounds.top ||
+          itemBounds.top > jarBounds.bottom
+        );
+
+        if (hasCollided && !isExploding) {
+          setIsExploding(true);
+          const points = getPointsForItem(type);
+          toast(
+            `${points > 0 ? '+' : ''}${points} points! ${description}`,
+            {
+              duration: 1500,
+              className: cn(
+                "w-auto text-sm font-medium",
+                points > 0 ? "bg-green-500" : "bg-red-500",
+                "text-white"
+              ),
             }
-          }
+          );
+          setTimeout(() => onFall(), 500);
         }
+      }
+      
+      if (!isExploding) {
+        animationFrameId = requestAnimationFrame(checkCollision);
       }
     };
 
-    const interval = setInterval(updateBounds, 100);
-    return () => clearInterval(interval);
-  }, [position, type, isExploding, onFall, description]);
+    animationFrameId = requestAnimationFrame(checkCollision);
 
-  const checkCollision = (itemBounds: DOMRect, jarBounds: DOMRect) => {
-    return !(
-      itemBounds.right < jarBounds.left ||
-      itemBounds.left > jarBounds.right ||
-      itemBounds.bottom < jarBounds.top ||
-      itemBounds.top > jarBounds.bottom
-    );
-  };
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [type, position, isExploding, onFall, description]);
 
   return (
     <motion.div
       id={`falling-item-${type}-${position}`}
       initial={{ y: -100 }}
-      animate={{ y: "100vh" }}
+      animate={{ y: window.innerHeight }}
       transition={{ duration: 3, ease: "linear" }}
       onAnimationComplete={() => {
         if (!isExploding) {
@@ -110,12 +111,12 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
       className={cn(
         "absolute flex flex-col items-center gap-1",
         isExploding && "animate-explode",
-        type === "gold" && "animate-coin-spin",
-        "border-2 border-purple-50"
+        type === "gold" && "animate-coin-spin"
       )}
       style={{ 
         left: position,
-        backgroundColor: 'rgb(253, 242, 255, 0.1)'
+        backgroundColor: 'rgb(253, 242, 255, 0.1)',
+        zIndex: 10
       }}
     >
       {type === "eye" ? (

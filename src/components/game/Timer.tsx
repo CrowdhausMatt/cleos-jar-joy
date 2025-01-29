@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 
 interface TimerProps {
   duration: number;
@@ -7,7 +7,7 @@ interface TimerProps {
 }
 
 export const Timer = ({ duration, onComplete, gameStarted }: TimerProps) => {
-  const [timeLeft, setTimeLeft] = useState(duration);
+  const timeLeftRef = useRef(duration);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleComplete = useCallback(() => {
@@ -20,22 +20,27 @@ export const Timer = ({ duration, onComplete, gameStarted }: TimerProps) => {
 
   useEffect(() => {
     if (gameStarted) {
-      // Reset timer and clear any existing interval
-      setTimeLeft(duration);
+      // Reset timer
+      timeLeftRef.current = duration;
+
+      // Clear any existing interval
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
 
       // Start new countdown
       intervalRef.current = setInterval(() => {
-        setTimeLeft((prevTime) => {
-          const newTime = prevTime - 1;
-          if (newTime <= 0) {
-            handleComplete();
-            return 0;
-          }
-          return newTime;
-        });
+        timeLeftRef.current -= 1;
+        
+        // Force re-render
+        const timerDisplay = document.querySelector('.timer-display');
+        if (timerDisplay) {
+          timerDisplay.textContent = `${timeLeftRef.current}s`;
+        }
+
+        if (timeLeftRef.current <= 0) {
+          handleComplete();
+        }
       }, 1000);
     } else {
       // Clear interval when game is not started
@@ -43,10 +48,9 @@ export const Timer = ({ duration, onComplete, gameStarted }: TimerProps) => {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
-      setTimeLeft(duration);
+      timeLeftRef.current = duration;
     }
 
-    // Cleanup function
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -56,8 +60,8 @@ export const Timer = ({ duration, onComplete, gameStarted }: TimerProps) => {
   }, [gameStarted, duration, handleComplete]);
 
   return (
-    <div className="fixed top-4 right-4 z-50 bg-white px-4 py-2 rounded-lg shadow-lg text-2xl font-bold text-game-primary">
-      {timeLeft}s
+    <div className="fixed top-4 right-4 z-50 bg-white px-4 py-2 rounded-lg shadow-lg text-2xl font-bold text-game-primary timer-display">
+      {timeLeftRef.current}s
     </div>
   );
 };
