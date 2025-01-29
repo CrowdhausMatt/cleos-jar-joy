@@ -31,24 +31,19 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
   useEffect(() => {
     const animate = async () => {
       await controls.start({
-        y: window.innerHeight + 100, // Animate past the bottom of the screen
+        y: window.innerHeight + 100,
         transition: { duration: 3, ease: "linear" }
       });
-      
-      if (!isExploding) {
-        onFall();
-      }
+      onFall();
     };
 
     animate();
-  }, [controls, isExploding, onFall]);
+  }, [controls, onFall]);
 
   const handleCollision = () => {
     setIsExploding(true);
     controls.stop();
-    setTimeout(() => {
-      onFall();
-    }, 500);
+    onFall();
   };
 
   return (
@@ -62,21 +57,24 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
       )}
       style={{ left: position }}
       onUpdate={(latest: { y: number }) => {
-        // Check for collision with jar
-        const jarPosition = window.innerWidth / 2;
-        const jarWidth = 96; // JAR_WIDTH
-        const jarLeft = jarPosition - jarWidth / 2;
-        const jarRight = jarPosition + jarWidth / 2;
-        const itemLeft = position;
-        const jarTopPosition = window.innerHeight - 150; // Jar's vertical position
-        
-        // Only trigger collision if the item is within jar's horizontal bounds AND
-        // has reached the jar's vertical position
-        if (itemLeft >= jarLeft && 
-            itemLeft <= jarRight && 
-            latest.y >= jarTopPosition - 20 && // Start checking slightly above jar
-            latest.y <= jarTopPosition + 20 && // Small collision window
-            !isExploding) { // Prevent multiple collisions
+        // Get jar dimensions and position
+        const JAR_WIDTH = 96;
+        const JAR_HEIGHT = 128; // 32px * 4 (h-32)
+        const jarX = window.innerWidth / 2 - JAR_WIDTH / 2;
+        const jarY = window.innerHeight - JAR_HEIGHT - 16; // 16px for bottom spacing
+
+        // Get item dimensions (approximated)
+        const ITEM_WIDTH = 48;
+        const ITEM_HEIGHT = 48;
+        const itemX = position;
+        const itemY = latest.y;
+
+        // Check for rectangle collision
+        if (!isExploding && // Prevent multiple collisions
+            itemX < jarX + JAR_WIDTH &&
+            itemX + ITEM_WIDTH > jarX &&
+            itemY < jarY + JAR_HEIGHT &&
+            itemY + ITEM_HEIGHT > jarY) {
           handleCollision();
         }
       }}
