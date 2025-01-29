@@ -74,6 +74,7 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
       }}
       className={cn(
         "absolute flex flex-col items-center gap-1",
+        "border border-transparent", // Invisible border for hitbox
         type === "gold" && "animate-coin-spin"
       )}
       style={{ left: position }}

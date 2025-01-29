@@ -18,6 +18,7 @@ export const Jar = ({ position }: JarProps) => {
           "rounded-3xl",
           "bg-gradient-to-br from-purple-400 to-purple-600",
           "shadow-lg overflow-hidden",
+          "border border-transparent", // Invisible border for hitbox
           "before:content-[''] before:absolute before:top-2 before:left-1/2 before:-translate-x-1/2",
           "before:w-16 before:h-4 before:bg-white/20 before:rounded-full",
           "after:content-[''] after:absolute after:top-[-10px] after:left-1/2 after:-translate-x-1/2",
