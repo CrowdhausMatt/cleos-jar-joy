@@ -12,7 +12,7 @@ export const Jar = ({ position, onMove }: JarProps) => {
   return (
     <div className="absolute bottom-4 w-full flex flex-col items-center">
       <motion.div
-        animate={{ x: position }}
+        style={{ x: position - window.innerWidth / 2 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
         className={cn(
           "w-24 h-32 relative",

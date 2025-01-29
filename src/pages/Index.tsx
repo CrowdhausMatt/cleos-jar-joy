@@ -19,6 +19,14 @@ const JAR_WIDTH = 96;
 const SPAWN_INTERVAL = 1000;
 const MOVE_STEP = 50;
 
+const itemDescriptions = {
+  money: "Cash Money!",
+  bill: "Utility Bill - Avoid!",
+  car: "Car Insurance - Don't catch!",
+  tax: "Tax Form - Run away!",
+  gold: "Golden Coin - Double points!"
+};
+
 const Index = () => {
   const [score, setScore] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
@@ -41,21 +49,28 @@ const Index = () => {
   };
 
   const handleItemFall = (item: FallingItem) => {
-    const jarWidth = JAR_WIDTH;
+    const jarLeft = jarPosition - JAR_WIDTH / 2;
+    const jarRight = jarPosition + JAR_WIDTH / 2;
     
-    if (
-      item.position > jarPosition - jarWidth / 2 &&
-      item.position < jarPosition + jarWidth / 2
-    ) {
+    if (item.position >= jarLeft && item.position <= jarRight) {
       if (item.type === "gold") {
         setScore((prev) => prev + 20);
-        toast("Double points! +20");
+        toast(itemDescriptions[item.type], {
+          duration: 1500,
+          className: "w-auto text-sm",
+        });
       } else if (item.type === "money") {
         setScore((prev) => prev + 10);
-        toast("Great catch! +10");
+        toast(itemDescriptions[item.type], {
+          duration: 1500,
+          className: "w-auto text-sm",
+        });
       } else {
         setScore((prev) => Math.max(0, prev - 5));
-        toast("Ouch! Don't catch that! -5");
+        toast(itemDescriptions[item.type], {
+          duration: 1500,
+          className: "w-auto text-sm",
+        });
       }
     }
 
@@ -68,7 +83,6 @@ const Index = () => {
         ? prev - MOVE_STEP 
         : prev + MOVE_STEP;
       
-      // Keep jar within screen bounds
       return Math.max(JAR_WIDTH/2, Math.min(window.innerWidth - JAR_WIDTH/2, newPosition));
     });
   };
@@ -102,6 +116,7 @@ const Index = () => {
           type={item.type}
           position={item.position}
           onFall={() => handleItemFall(item)}
+          description={itemDescriptions[item.type]}
         />
       ))}
 
