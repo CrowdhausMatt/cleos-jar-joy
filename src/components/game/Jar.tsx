@@ -1,14 +1,12 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { Button } from "../ui/button";
 
 interface JarProps {
   position: number;
   onMove: (direction: "left" | "right") => void;
 }
 
-export const Jar = ({ position, onMove }: JarProps) => {
+export const Jar = ({ position }: JarProps) => {
   return (
     <div className="absolute bottom-4 w-full flex flex-col items-center">
       <motion.div
@@ -34,25 +32,6 @@ export const Jar = ({ position, onMove }: JarProps) => {
         <span className="text-white text-sm font-semibold mt-1">Swear Jar</span>
         <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/40 to-transparent pointer-events-none" />
       </motion.div>
-      
-      <div className="mt-4 flex gap-4">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => onMove("left")}
-          className="bg-white/80 hover:bg-white"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => onMove("right")}
-          className="bg-white/80 hover:bg-white"
-        >
-          <ArrowRight className="h-4 w-4" />
-        </Button>
-      </div>
     </div>
   );
 };

@@ -49,41 +49,30 @@ const Index = () => {
     ]);
   };
 
-  const handleItemFall = (item: FallingItem) => {
+  const handleItemFall = (fallingItem: FallingItem) => {
     const jarLeft = jarPosition - JAR_WIDTH / 2;
     const jarRight = jarPosition + JAR_WIDTH / 2;
     
-    if (item.position >= jarLeft && item.position <= jarRight) {
-      // Remove the item immediately upon collision
-      setFallingItems((prev) => prev.filter((m) => m.id !== item.id));
-      
+    if (fallingItem.position >= jarLeft && fallingItem.position <= jarRight) {
       let pointsEarned = 0;
       
-      if (item.type === "gold") {
+      if (fallingItem.type === "gold") {
         pointsEarned = 20;
-        setScore((prev) => prev + pointsEarned);
-        toast(`+${pointsEarned} points! ${itemDescriptions[item.type]}`, {
-          duration: 1500,
-          className: "w-auto text-sm",
-        });
-      } else if (item.type === "money" || item.type === "swear") {
+      } else if (fallingItem.type === "money" || fallingItem.type === "swear") {
         pointsEarned = 10;
-        setScore((prev) => prev + pointsEarned);
-        toast(`+${pointsEarned} points! ${itemDescriptions[item.type]}`, {
-          duration: 1500,
-          className: "w-auto text-sm",
-        });
       } else {
         pointsEarned = -5;
-        setScore((prev) => Math.max(0, prev + pointsEarned));
-        toast(`${pointsEarned} points! ${itemDescriptions[item.type]}`, {
-          duration: 1500,
-          className: "w-auto text-sm",
-        });
       }
-    } else {
-      // Only remove items that have fallen past the bottom of the screen
-      setFallingItems((prev) => prev.filter((m) => m.id !== item.id));
+
+      setScore((prev) => Math.max(0, prev + pointsEarned));
+      setFallingItems((prev) => 
+        prev.filter((item) => item.id !== fallingItem.id)
+      );
+
+      toast(`${pointsEarned > 0 ? '+' : ''}${pointsEarned} points! ${itemDescriptions[fallingItem.type]}`, {
+        duration: 1500,
+        className: "w-auto text-sm",
+      });
     }
   };
 
@@ -96,6 +85,20 @@ const Index = () => {
       return Math.max(JAR_WIDTH/2, Math.min(window.innerWidth - JAR_WIDTH/2, newPosition));
     });
   };
+
+  // Handle keyboard controls
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        handleMove("left");
+      } else if (e.key === "ArrowRight") {
+        handleMove("right");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   useEffect(() => {
     if (isGameOver) return;
