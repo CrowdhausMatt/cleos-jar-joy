@@ -54,6 +54,9 @@ const Index = () => {
     const jarRight = jarPosition + JAR_WIDTH / 2;
     
     if (item.position >= jarLeft && item.position <= jarRight) {
+      // Remove the item immediately upon collision
+      setFallingItems((prev) => prev.filter((m) => m.id !== item.id));
+      
       let pointsEarned = 0;
       
       if (item.type === "gold") {
@@ -78,9 +81,10 @@ const Index = () => {
           className: "w-auto text-sm",
         });
       }
+    } else {
+      // Only remove items that have fallen past the bottom of the screen
+      setFallingItems((prev) => prev.filter((m) => m.id !== item.id));
     }
-    
-    setFallingItems((prev) => prev.filter((m) => m.id !== item.id));
   };
 
   const handleMove = (direction: "left" | "right") => {
