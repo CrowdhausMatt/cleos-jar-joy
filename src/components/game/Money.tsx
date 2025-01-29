@@ -27,25 +27,6 @@ const getRandomSwearWord = () => {
   return words[Math.floor(Math.random() * words.length)];
 };
 
-const getPointsForItem = (type: MoneyProps["type"]) => {
-  switch(type) {
-    case "gold":
-      return 20;
-    case "money":
-    case "swear":
-    case "flowers":
-    case "piggy":
-      return 10;
-    case "eye":
-    case "bill":
-    case "car":
-    case "tax":
-      return -5;
-    default:
-      return 0;
-  }
-};
-
 export const Money = ({ type, position, onFall, description }: MoneyProps) => {
   const [isExploding, setIsExploding] = useState(false);
 
@@ -69,18 +50,6 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
 
         if (hasCollided && !isExploding) {
           setIsExploding(true);
-          const points = getPointsForItem(type);
-          toast(
-            `${points > 0 ? '+' : ''}${points} points! ${description}`,
-            {
-              duration: 1500,
-              className: cn(
-                "w-auto text-sm font-medium",
-                points > 0 ? "bg-green-500" : "bg-red-500",
-                "text-white"
-              ),
-            }
-          );
           setTimeout(() => onFall(), 500);
         }
       }
@@ -95,7 +64,7 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [type, position, isExploding, onFall, description]);
+  }, [type, position, isExploding, onFall]);
 
   return (
     <motion.div

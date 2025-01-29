@@ -66,7 +66,7 @@ export const useGameLogic = () => {
     
     if (fallingItem.position >= jarLeft && fallingItem.position <= jarRight) {
       const pointsEarned = itemPoints[fallingItem.type];
-      setScore((prev) => Math.max(0, prev + pointsEarned));
+      setScore((prev) => prev + pointsEarned);
 
       toast(
         `${pointsEarned > 0 ? '+' : ''}${pointsEarned} points! ${itemDescriptions[fallingItem.type]}`,
