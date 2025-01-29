@@ -68,11 +68,14 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
         const jarLeft = jarPosition - jarWidth / 2;
         const jarRight = jarPosition + jarWidth / 2;
         const itemLeft = position;
+        const jarTopPosition = window.innerHeight - 150; // Jar's top position
         
-        // If item is within jar's horizontal bounds and near the bottom of the screen
+        // Only trigger collision if the item is within jar's horizontal bounds AND
+        // has reached the jar's vertical position
         if (itemLeft >= jarLeft && 
             itemLeft <= jarRight && 
-            latest.y >= window.innerHeight - 150) { // 150px from bottom
+            latest.y >= jarTopPosition && 
+            latest.y <= jarTopPosition + 20) { // Small vertical collision window
           handleCollision();
         }
       }}
