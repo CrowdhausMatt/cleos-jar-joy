@@ -31,6 +31,7 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
 
   useEffect(() => {
     let animationFrameId: number;
+    let collisionTimeout: NodeJS.Timeout;
     
     const checkCollision = () => {
       const item = document.getElementById(`falling-item-${type}-${position}`);
@@ -50,6 +51,16 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
         if (hasCollided && !isExploding) {
           setIsExploding(true);
           onFall();
+          
+          // Clear any existing timeout
+          if (collisionTimeout) {
+            clearTimeout(collisionTimeout);
+          }
+          
+          // Set a timeout to reset the explosion state
+          collisionTimeout = setTimeout(() => {
+            setIsExploding(false);
+          }, 100); // Short delay to prevent multiple collisions
         }
       }
       
@@ -62,6 +73,9 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      if (collisionTimeout) {
+        clearTimeout(collisionTimeout);
+      }
     };
   }, [type, position, isExploding, onFall]);
 
