@@ -6,7 +6,7 @@ import { Score } from "@/components/game/Score";
 import { GameOver } from "@/components/game/GameOver";
 import { toast } from "sonner";
 
-type ItemType = "money" | "bill" | "car" | "tax" | "gold" | "swear" | "eye";
+type ItemType = "money" | "bill" | "car" | "tax" | "gold" | "swear";
 
 interface FallingItem {
   id: number;
@@ -25,8 +25,7 @@ const itemDescriptions = {
   car: "Car Insurance - Don't catch!",
   tax: "Tax Form - Run away!",
   gold: "Golden Coin - Double points!",
-  swear: "Caught a swear word!",
-  eye: "Eye Test - Look away!"
+  swear: "Caught a swear word!"
 };
 
 const Index = () => {
@@ -36,7 +35,7 @@ const Index = () => {
   const [jarPosition, setJarPosition] = useState(window.innerWidth / 2);
 
   const spawnItem = () => {
-    const types: ItemType[] = ["money", "bill", "car", "tax", "swear", "eye"];
+    const types: ItemType[] = ["money", "bill", "car", "tax", "swear"];
     const randomType = Math.random() < 0.1 ? "gold" : types[Math.floor(Math.random() * types.length)];
     const randomPosition = Math.random() * (window.innerWidth - 50);
 
@@ -61,8 +60,6 @@ const Index = () => {
         pointsEarned = 20;
       } else if (fallingItem.type === "money" || fallingItem.type === "swear") {
         pointsEarned = 10;
-      } else if (fallingItem.type === "eye") {
-        pointsEarned = -15; // More negative points for catching the eye test
       } else {
         pointsEarned = -5;
       }
@@ -75,6 +72,7 @@ const Index = () => {
       });
     }
     
+    // Remove the item regardless of collision
     setFallingItems((prev) => prev.filter((item) => item.id !== fallingItem.id));
   };
 
