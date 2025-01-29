@@ -67,26 +67,26 @@ const Index = () => {
           break;
         case "money":
         case "swear":
-          pointsEarned = 10;
-          break;
         case "flowers":
-          pointsEarned = 10;
-          break;
         case "piggy":
           pointsEarned = 10;
           break;
         case "eye":
+        case "bill":
+        case "car":
+        case "tax":
           pointsEarned = -5;
           break;
         default:
-          pointsEarned = -5;
+          pointsEarned = 0;
       }
 
+      // Update score, ensuring it doesn't go below 0
       setScore((prev) => Math.max(0, prev + pointsEarned));
 
       toast(`${pointsEarned > 0 ? '+' : ''}${pointsEarned} points! ${itemDescriptions[fallingItem.type]}`, {
         duration: 1500,
-        className: "w-auto text-sm",
+        className: `w-auto text-sm font-medium ${pointsEarned > 0 ? 'bg-green-500' : 'bg-red-500'} text-white`,
       });
     }
     
