@@ -27,7 +27,6 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
   const [isExploding, setIsExploding] = useState(false);
   const [itemBounds, setItemBounds] = useState({ top: 0, left: 0, bottom: 0, right: 0 });
 
-  // Debug: Update and log item position
   useEffect(() => {
     const updateBounds = () => {
       const element = document.getElementById(`falling-item-${type}-${position}`);
@@ -36,13 +35,11 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
         setItemBounds(bounds);
         console.log("Item bounds:", bounds);
         
-        // Get jar bounds
         const jar = document.querySelector('.jar-hitbox');
         if (jar) {
           const jarBounds = jar.getBoundingClientRect();
           console.log("Jar bounds:", jarBounds);
           
-          // Check collision
           if (checkCollision(bounds, jarBounds)) {
             console.log("COLLISION DETECTED!");
             if (!isExploding) {
@@ -54,7 +51,7 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
       }
     };
 
-    const interval = setInterval(updateBounds, 100); // Check every 100ms
+    const interval = setInterval(updateBounds, 100);
     return () => clearInterval(interval);
   }, [position, type, isExploding, onFall]);
 
@@ -100,13 +97,12 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
         "absolute flex flex-col items-center gap-1",
         isExploding && "animate-explode",
         type === "gold" && "animate-coin-spin",
-        // Debug: Add visible border to show hitbox
-        "border-2 border-red-500 border-opacity-50"
+        // Make border match background color
+        "border-2 border-purple-50"
       )}
       style={{ 
         left: position,
-        // Debug: Add background to make hitbox visible
-        backgroundColor: 'rgba(255, 0, 0, 0.1)'
+        backgroundColor: 'rgb(253, 242, 255, 0.1)' // Very subtle purple tint to match background
       }}
     >
       <span className="text-3xl">
