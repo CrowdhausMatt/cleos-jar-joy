@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Jar } from "@/components/game/Jar";
 import { Money } from "@/components/game/Money";
-import { Timer } from "@/components/game/Timer";
 import { Score } from "@/components/game/Score";
 import { GameOver } from "@/components/game/GameOver";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,6 @@ interface FallingItem {
   position: number;
 }
 
-const GAME_DURATION = 30;
 const JAR_WIDTH = 96;
 const SPAWN_INTERVAL = 1000;
 const MOVE_STEP = 50;
@@ -81,7 +79,6 @@ const Index = () => {
           pointsEarned = 0;
       }
 
-      // Update score, ensuring it doesn't go below 0
       setScore((prev) => Math.max(0, prev + pointsEarned));
 
       toast(`${pointsEarned > 0 ? '+' : ''}${pointsEarned} points! ${itemDescriptions[fallingItem.type]}`, {
@@ -103,7 +100,6 @@ const Index = () => {
     });
   };
 
-  // Handle keyboard controls
   useEffect(() => {
     if (!gameStarted) return;
 
@@ -170,7 +166,6 @@ const Index = () => {
       ) : (
         <>
           <Score score={score} />
-          <Timer duration={GAME_DURATION} onComplete={handleGameOver} gameStarted={gameStarted} />
 
           {fallingItems.map((item) => (
             <Money
