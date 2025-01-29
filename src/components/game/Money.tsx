@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 
 interface MoneyProps {
-  type: "money" | "bill" | "car" | "tax" | "gold" | "swear";
+  type: "money" | "bill" | "car" | "tax" | "gold" | "swear" | "eye" | "flowers" | "piggy";
   position: number;
   onFall: () => void;
   description: string;
@@ -16,6 +16,9 @@ const itemIcons = {
   tax: "📋",
   gold: "🪙",
   swear: "F*CK",
+  eye: "👁️",
+  flowers: "💐",
+  piggy: "🐷",
 };
 
 const getRandomSwearWord = () => {
@@ -105,9 +108,29 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
         backgroundColor: 'rgb(253, 242, 255, 0.1)' // Very subtle purple tint to match background
       }}
     >
-      <span className="text-3xl">
-        {type === "swear" ? getRandomSwearWord() : itemIcons[type]}
-      </span>
+      {type === "eye" ? (
+        <img 
+          src="/lovable-uploads/41558c01-221f-4001-8fca-454e147c3562.png"
+          alt="Eye Test"
+          className="w-8 h-8 object-contain"
+        />
+      ) : type === "flowers" ? (
+        <img 
+          src="/lovable-uploads/83cb02de-1f1c-4993-9d2f-73f279150e70.png"
+          alt="Flowers"
+          className="w-8 h-8 object-contain"
+        />
+      ) : type === "piggy" ? (
+        <img 
+          src="/lovable-uploads/f3c6022b-c68e-48b6-aae1-ddc7f15aa79d.png"
+          alt="Piggy Bank"
+          className="w-8 h-8 object-contain"
+        />
+      ) : (
+        <span className="text-3xl">
+          {type === "swear" ? getRandomSwearWord() : itemIcons[type]}
+        </span>
+      )}
       <span className="text-xs font-medium bg-white/80 px-2 py-0.5 rounded-full shadow-sm">
         {description}
       </span>

@@ -6,7 +6,7 @@ import { Score } from "@/components/game/Score";
 import { GameOver } from "@/components/game/GameOver";
 import { toast } from "sonner";
 
-type ItemType = "money" | "bill" | "car" | "tax" | "gold" | "swear";
+type ItemType = "money" | "bill" | "car" | "tax" | "gold" | "swear" | "eye" | "flowers" | "piggy";
 
 interface FallingItem {
   id: number;
@@ -25,7 +25,10 @@ const itemDescriptions = {
   car: "Car Insurance - Don't catch!",
   tax: "Tax Form - Run away!",
   gold: "Golden Coin - Double points!",
-  swear: "Caught a swear word!"
+  swear: "Caught a swear word!",
+  eye: "Eye Test Cost",
+  flowers: "Flowers for Girlfriend",
+  piggy: "Savings"
 };
 
 const Index = () => {
@@ -35,7 +38,7 @@ const Index = () => {
   const [jarPosition, setJarPosition] = useState(window.innerWidth / 2);
 
   const spawnItem = () => {
-    const types: ItemType[] = ["money", "bill", "car", "tax", "swear"];
+    const types: ItemType[] = ["money", "bill", "car", "tax", "swear", "eye", "flowers", "piggy"];
     const randomType = Math.random() < 0.1 ? "gold" : types[Math.floor(Math.random() * types.length)];
     const randomPosition = Math.random() * (window.innerWidth - 50);
 
@@ -56,12 +59,25 @@ const Index = () => {
     if (fallingItem.position >= jarLeft && fallingItem.position <= jarRight) {
       let pointsEarned = 0;
       
-      if (fallingItem.type === "gold") {
-        pointsEarned = 20;
-      } else if (fallingItem.type === "money" || fallingItem.type === "swear") {
-        pointsEarned = 10;
-      } else {
-        pointsEarned = -5;
+      switch(fallingItem.type) {
+        case "gold":
+          pointsEarned = 20;
+          break;
+        case "money":
+        case "swear":
+          pointsEarned = 10;
+          break;
+        case "flowers":
+          pointsEarned = 10;
+          break;
+        case "piggy":
+          pointsEarned = 10;
+          break;
+        case "eye":
+          pointsEarned = -5;
+          break;
+        default:
+          pointsEarned = -5;
       }
 
       setScore((prev) => Math.max(0, prev + pointsEarned));
@@ -72,7 +88,6 @@ const Index = () => {
       });
     }
     
-    // Remove the item regardless of collision
     setFallingItems((prev) => prev.filter((item) => item.id !== fallingItem.id));
   };
 
