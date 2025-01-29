@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 
 interface MoneyProps {
-  type: "money" | "bill" | "car" | "tax" | "gold" | "swear";
+  type: "money" | "bill" | "car" | "tax" | "gold" | "swear" | "eye";
   position: number;
   onFall: () => void;
   description: string;
@@ -16,6 +16,7 @@ const itemIcons = {
   tax: "📋",
   gold: "🪙",
   swear: "F*CK",
+  eye: "👁️"
 };
 
 const getRandomSwearWord = () => {
@@ -60,7 +61,7 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
         type === "gold" && "animate-coin-spin"
       )}
       style={{ left: position }}
-      onUpdate={(latest) => {
+      onUpdate={(latest: { y: number }) => {
         // Check for collision with jar
         const jarPosition = window.innerWidth / 2;
         const jarWidth = 96; // JAR_WIDTH
