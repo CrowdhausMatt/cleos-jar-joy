@@ -54,21 +54,26 @@ const Index = () => {
     const jarRight = jarPosition + JAR_WIDTH / 2;
     
     if (item.position >= jarLeft && item.position <= jarRight) {
+      let pointsEarned = 0;
+      
       if (item.type === "gold") {
-        setScore((prev) => prev + 20);
-        toast(itemDescriptions[item.type], {
+        pointsEarned = 20;
+        setScore((prev) => prev + pointsEarned);
+        toast(`+${pointsEarned} points! ${itemDescriptions[item.type]}`, {
           duration: 1500,
           className: "w-auto text-sm",
         });
       } else if (item.type === "money" || item.type === "swear") {
-        setScore((prev) => prev + 10);
-        toast(itemDescriptions[item.type], {
+        pointsEarned = 10;
+        setScore((prev) => prev + pointsEarned);
+        toast(`+${pointsEarned} points! ${itemDescriptions[item.type]}`, {
           duration: 1500,
           className: "w-auto text-sm",
         });
       } else {
-        setScore((prev) => Math.max(0, prev - 5));
-        toast(itemDescriptions[item.type], {
+        pointsEarned = -5;
+        setScore((prev) => Math.max(0, prev + pointsEarned));
+        toast(`${pointsEarned} points! ${itemDescriptions[item.type]}`, {
           duration: 1500,
           className: "w-auto text-sm",
         });
