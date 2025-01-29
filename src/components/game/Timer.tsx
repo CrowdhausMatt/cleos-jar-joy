@@ -20,22 +20,21 @@ export const Timer = ({ duration, onComplete, gameStarted }: TimerProps) => {
 
   useEffect(() => {
     if (gameStarted) {
-      // Clear any existing interval
+      // Reset timer and clear any existing interval
+      setTimeLeft(duration);
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
-      
-      // Reset timer to initial duration
-      setTimeLeft(duration);
-      
+
       // Start new countdown
       intervalRef.current = setInterval(() => {
         setTimeLeft((prevTime) => {
-          if (prevTime <= 1) {
+          const newTime = prevTime - 1;
+          if (newTime <= 0) {
             handleComplete();
             return 0;
           }
-          return prevTime - 1;
+          return newTime;
         });
       }, 1000);
     } else {
@@ -57,7 +56,7 @@ export const Timer = ({ duration, onComplete, gameStarted }: TimerProps) => {
   }, [gameStarted, duration, handleComplete]);
 
   return (
-    <div className="absolute top-4 right-4 text-2xl font-bold text-game-primary">
+    <div className="fixed top-4 right-4 z-50 bg-white px-4 py-2 rounded-lg shadow-lg text-2xl font-bold text-game-primary">
       {timeLeft}s
     </div>
   );
