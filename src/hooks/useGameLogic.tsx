@@ -21,6 +21,8 @@ export const itemDescriptions = {
   piggy: "Savings"
 };
 
+const JAR_WIDTH = 96; // Define the constant
+
 export const useGameLogic = () => {
   const [score, setScore] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
@@ -44,7 +46,6 @@ export const useGameLogic = () => {
   };
 
   const handleItemFall = (fallingItem: FallingItem) => {
-    const JAR_WIDTH = 96;
     const jarLeft = jarPosition - JAR_WIDTH / 2;
     const jarRight = jarPosition + JAR_WIDTH / 2;
     

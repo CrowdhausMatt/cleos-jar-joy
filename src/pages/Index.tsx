@@ -3,7 +3,7 @@ import { Money } from "@/components/game/Money";
 import { Score } from "@/components/game/Score";
 import { GameOver } from "@/components/game/GameOver";
 import { Button } from "@/components/ui/button";
-import { useGameLogic } from "@/hooks/useGameLogic";
+import { useGameLogic, itemDescriptions } from "@/hooks/useGameLogic";
 import { toast } from "sonner";
 
 const Index = () => {
