@@ -29,16 +29,22 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
   const controls = useAnimation();
 
   useEffect(() => {
-    const animate = async () => {
+    const startAnimation = async () => {
       await controls.start({
-        y: window.innerHeight + 100,
-        transition: { duration: 3, ease: "linear" }
+        y: [0, window.innerHeight],
+        transition: { 
+          y: { duration: 3, ease: "linear" }
+        }
       });
-      onFall();
+      
+      // Only call onFall if we haven't collided with the jar
+      if (!isExploding) {
+        onFall();
+      }
     };
 
-    animate();
-  }, [controls, onFall]);
+    startAnimation();
+  }, [controls, onFall, isExploding]);
 
   const handleCollision = () => {
     setIsExploding(true);
@@ -59,18 +65,18 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
       onUpdate={(latest: { y: number }) => {
         // Get jar dimensions and position
         const JAR_WIDTH = 96;
-        const JAR_HEIGHT = 128; // 32px * 4 (h-32)
+        const JAR_HEIGHT = 128;
         const jarX = window.innerWidth / 2 - JAR_WIDTH / 2;
-        const jarY = window.innerHeight - JAR_HEIGHT - 16; // 16px for bottom spacing
+        const jarY = window.innerHeight - JAR_HEIGHT - 16;
 
-        // Get item dimensions (approximated)
+        // Get item dimensions
         const ITEM_WIDTH = 48;
         const ITEM_HEIGHT = 48;
         const itemX = position;
         const itemY = latest.y;
 
         // Check for rectangle collision
-        if (!isExploding && // Prevent multiple collisions
+        if (!isExploding &&
             itemX < jarX + JAR_WIDTH &&
             itemX + ITEM_WIDTH > jarX &&
             itemY < jarY + JAR_HEIGHT &&
