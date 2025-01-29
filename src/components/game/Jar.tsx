@@ -16,7 +16,7 @@ export const Jar = ({ position, onMove }: JarProps) => {
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
         className={cn(
           "w-24 h-32 relative",
-          "flex items-center justify-center",
+          "flex items-center justify-center flex-col",
           "rounded-3xl",
           "bg-gradient-to-br from-purple-400 to-purple-600",
           "shadow-lg",
@@ -31,6 +31,7 @@ export const Jar = ({ position, onMove }: JarProps) => {
           alt="Savings Jar"
           className="w-12 h-12 object-contain"
         />
+        <span className="text-white text-sm font-semibold mt-1">Swear Jar</span>
         <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/40 to-transparent pointer-events-none" />
       </motion.div>
       

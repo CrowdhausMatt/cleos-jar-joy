@@ -79,7 +79,7 @@ const Index = () => {
         });
       }
     }
-
+    
     setFallingItems((prev) => prev.filter((m) => m.id !== item.id));
   };
 
