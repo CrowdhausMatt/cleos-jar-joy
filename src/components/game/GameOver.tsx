@@ -14,9 +14,12 @@ export const GameOver = ({ score, onRestart }: GameOverProps) => {
       className="fixed inset-0 bg-black/50 flex items-center justify-center"
     >
       <div className="bg-white p-8 rounded-lg text-center">
-        <h2 className="text-3xl font-bold mb-4">Game Over!</h2>
-        <p className="text-xl mb-6">You just saved £{score}! Keep hustling.</p>
-        <Button onClick={onRestart} className="bg-game-primary hover:bg-game-primary/90">
+        <h2 className="text-4xl font-bold mb-4">Game Over!</h2>
+        <div className="text-2xl mb-6">
+          <p className="mb-2">Final Score:</p>
+          <p className="text-5xl font-bold text-game-primary">£{score}</p>
+        </div>
+        <Button onClick={onRestart} className="bg-game-primary hover:bg-game-primary/90 text-lg px-8 py-4">
           Play Again
         </Button>
       </div>

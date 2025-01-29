@@ -14,7 +14,7 @@ interface FallingItem {
   position: number;
 }
 
-const GAME_DURATION = 60;
+const GAME_DURATION = 30; // Changed from 60 to 30 seconds
 const JAR_WIDTH = 96;
 const SPAWN_INTERVAL = 1000;
 const MOVE_STEP = 50;
@@ -124,6 +124,11 @@ const Index = () => {
 
   const handleGameOver = () => {
     setIsGameOver(true);
+    // Show final score toast
+    toast(`Game Over! Final Score: £${score}`, {
+      duration: 3000,
+      className: "w-auto text-lg font-bold",
+    });
   };
 
   const handleRestart = () => {
