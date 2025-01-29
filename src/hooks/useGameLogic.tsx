@@ -21,17 +21,17 @@ export const itemDescriptions = {
   piggy: "Savings"
 };
 
-// Point values for each item type
+// Point values for each item type - ensuring every item has a clear value
 export const itemPoints = {
   gold: 20,    // Most valuable - special item
   money: 10,   // Basic positive points
-  swear: 10,   // Catching swear words is good
+  swear: 15,   // Increased value for catching swear words
   flowers: 10, // Positive item
   piggy: 10,   // Savings are good
-  eye: -5,     // Costs money
-  bill: -5,    // Bills reduce points
-  car: -5,     // Insurance costs
-  tax: -5      // Taxes reduce points
+  eye: -10,    // Costs money
+  bill: -10,   // Bills reduce points
+  car: -15,    // Insurance costs more
+  tax: -20     // Taxes are the most costly
 };
 
 const JAR_WIDTH = 96;
@@ -66,8 +66,15 @@ export const useGameLogic = () => {
     
     if (fallingItem.position >= jarLeft && fallingItem.position <= jarRight) {
       const pointsEarned = itemPoints[fallingItem.type];
-      setScore(prevScore => prevScore + pointsEarned);
+      
+      // Immediately update the score
+      setScore(prevScore => {
+        const newScore = prevScore + pointsEarned;
+        console.log(`Score update - Type: ${fallingItem.type}, Points: ${pointsEarned}, New Score: ${newScore}`);
+        return newScore;
+      });
 
+      // Show toast with point information
       toast(
         `${pointsEarned > 0 ? '+' : ''}${pointsEarned} points! ${itemDescriptions[fallingItem.type]}`,
         {
@@ -77,6 +84,7 @@ export const useGameLogic = () => {
       );
     }
     
+    // Remove the item regardless of whether it was caught
     setFallingItems((prev) => prev.filter((item) => item.id !== fallingItem.id));
   };
 
