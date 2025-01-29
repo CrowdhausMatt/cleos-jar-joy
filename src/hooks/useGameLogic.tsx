@@ -139,7 +139,10 @@ export const useGameLogic = () => {
     jarPosition,
     gameStarted,
     timeLeft,
-    setGameStarted,
+    setGameStarted: (started: boolean) => {
+      setGameStarted(started);
+      setTimeLeft(GAME_DURATION); // Reset timer when game starts
+    },
     setIsGameOver,
     handleItemFall,
     handleMove,
