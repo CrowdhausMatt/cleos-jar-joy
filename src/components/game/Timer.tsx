@@ -3,15 +3,18 @@ import { useEffect, useState } from "react";
 interface TimerProps {
   duration: number;
   onComplete: () => void;
+  gameStarted: boolean;
 }
 
-export const Timer = ({ duration, onComplete }: TimerProps) => {
+export const Timer = ({ duration, onComplete, gameStarted }: TimerProps) => {
   const [timeLeft, setTimeLeft] = useState(duration);
 
   useEffect(() => {
-    // Reset timer when duration changes
-    setTimeLeft(duration);
-    
+    if (!gameStarted) {
+      setTimeLeft(duration);
+      return;
+    }
+
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -24,7 +27,7 @@ export const Timer = ({ duration, onComplete }: TimerProps) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [duration, onComplete]);
+  }, [duration, onComplete, gameStarted]);
 
   return (
     <div className="absolute top-4 right-4 text-2xl font-bold text-game-primary">

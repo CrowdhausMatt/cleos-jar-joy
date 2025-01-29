@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 interface MoneyProps {
   type: "money" | "bill" | "car" | "tax" | "gold" | "swear" | "eye" | "flowers" | "piggy";
@@ -26,6 +27,25 @@ const getRandomSwearWord = () => {
   return words[Math.floor(Math.random() * words.length)];
 };
 
+const getPointsForItem = (type: MoneyProps["type"]) => {
+  switch(type) {
+    case "gold":
+      return 20;
+    case "money":
+    case "swear":
+    case "flowers":
+    case "piggy":
+      return 10;
+    case "eye":
+    case "bill":
+    case "car":
+    case "tax":
+      return -5;
+    default:
+      return 0;
+  }
+};
+
 export const Money = ({ type, position, onFall, description }: MoneyProps) => {
   const [isExploding, setIsExploding] = useState(false);
   const [itemBounds, setItemBounds] = useState({ top: 0, left: 0, bottom: 0, right: 0 });
@@ -36,17 +56,26 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
       if (element) {
         const bounds = element.getBoundingClientRect();
         setItemBounds(bounds);
-        console.log("Item bounds:", bounds);
         
         const jar = document.querySelector('.jar-hitbox');
         if (jar) {
           const jarBounds = jar.getBoundingClientRect();
-          console.log("Jar bounds:", jarBounds);
           
           if (checkCollision(bounds, jarBounds)) {
-            console.log("COLLISION DETECTED!");
             if (!isExploding) {
               setIsExploding(true);
+              const points = getPointsForItem(type);
+              toast(
+                `${points > 0 ? '+' : ''}${points} points! ${description}`,
+                {
+                  duration: 1500,
+                  className: cn(
+                    "w-auto text-sm font-medium",
+                    points > 0 ? "bg-green-500" : "bg-red-500",
+                    "text-white"
+                  ),
+                }
+              );
               setTimeout(() => onFall(), 500);
             }
           }
@@ -56,32 +85,15 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
 
     const interval = setInterval(updateBounds, 100);
     return () => clearInterval(interval);
-  }, [position, type, isExploding, onFall]);
+  }, [position, type, isExploding, onFall, description]);
 
   const checkCollision = (itemBounds: DOMRect, jarBounds: DOMRect) => {
-    const collision = !(
+    return !(
       itemBounds.right < jarBounds.left ||
       itemBounds.left > jarBounds.right ||
       itemBounds.bottom < jarBounds.top ||
       itemBounds.top > jarBounds.bottom
     );
-    
-    if (collision) {
-      console.log("Collision details:", {
-        itemBounds,
-        jarBounds,
-        itemRight: itemBounds.right,
-        jarLeft: jarBounds.left,
-        itemLeft: itemBounds.left,
-        jarRight: jarBounds.right,
-        itemBottom: itemBounds.bottom,
-        jarTop: jarBounds.top,
-        itemTop: itemBounds.top,
-        jarBottom: jarBounds.bottom
-      });
-    }
-    
-    return collision;
   };
 
   return (
@@ -91,7 +103,6 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
       animate={{ y: "100vh" }}
       transition={{ duration: 3, ease: "linear" }}
       onAnimationComplete={() => {
-        console.log("Animation complete, isExploding:", isExploding);
         if (!isExploding) {
           onFall();
         }
@@ -111,19 +122,19 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
         <img 
           src="/lovable-uploads/41558c01-221f-4001-8fca-454e147c3562.png"
           alt="Eye Test"
-          className="w-24 h-24 object-contain" // Increased from w-8 h-8 to w-24 h-24 (3x size)
+          className="w-24 h-24 object-contain"
         />
       ) : type === "flowers" ? (
         <img 
           src="/lovable-uploads/83cb02de-1f1c-4993-9d2f-73f279150e70.png"
           alt="Flowers"
-          className="w-24 h-24 object-contain" // Increased from w-8 h-8 to w-24 h-24 (3x size)
+          className="w-24 h-24 object-contain"
         />
       ) : type === "piggy" ? (
         <img 
           src="/lovable-uploads/f3c6022b-c68e-48b6-aae1-ddc7f15aa79d.png"
           alt="Piggy Bank"
-          className="w-24 h-24 object-contain" // Increased from w-8 h-8 to w-24 h-24 (3x size)
+          className="w-24 h-24 object-contain"
         />
       ) : (
         <span className="text-3xl">

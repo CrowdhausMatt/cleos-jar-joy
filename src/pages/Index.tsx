@@ -129,7 +129,6 @@ const Index = () => {
   const handleGameOver = () => {
     setIsGameOver(true);
     setGameStarted(false);
-    // Show final score toast
     toast(`Game Over! Final Score: £${score}`, {
       duration: 3000,
       className: "w-auto text-lg font-bold",
@@ -171,7 +170,7 @@ const Index = () => {
       ) : (
         <>
           <Score score={score} />
-          <Timer duration={GAME_DURATION} onComplete={handleGameOver} />
+          <Timer duration={GAME_DURATION} onComplete={handleGameOver} gameStarted={gameStarted} />
 
           {fallingItems.map((item) => (
             <Money
