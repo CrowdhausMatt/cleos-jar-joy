@@ -4,6 +4,7 @@ import { Money } from "@/components/game/Money";
 import { Timer } from "@/components/game/Timer";
 import { Score } from "@/components/game/Score";
 import { GameOver } from "@/components/game/GameOver";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 type ItemType = "money" | "bill" | "car" | "tax" | "gold" | "swear" | "eye" | "flowers" | "piggy";
@@ -36,6 +37,7 @@ const Index = () => {
   const [isGameOver, setIsGameOver] = useState(false);
   const [fallingItems, setFallingItems] = useState<FallingItem[]>([]);
   const [jarPosition, setJarPosition] = useState(window.innerWidth / 2);
+  const [gameStarted, setGameStarted] = useState(false);
 
   const spawnItem = () => {
     const types: ItemType[] = ["money", "bill", "car", "tax", "swear", "eye", "flowers", "piggy"];
@@ -103,6 +105,8 @@ const Index = () => {
 
   // Handle keyboard controls
   useEffect(() => {
+    if (!gameStarted) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
         handleMove("left");
@@ -113,17 +117,18 @@ const Index = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [gameStarted]);
 
   useEffect(() => {
-    if (isGameOver) return;
+    if (!gameStarted || isGameOver) return;
 
     const interval = setInterval(spawnItem, SPAWN_INTERVAL);
     return () => clearInterval(interval);
-  }, [isGameOver]);
+  }, [isGameOver, gameStarted]);
 
   const handleGameOver = () => {
     setIsGameOver(true);
+    setGameStarted(false);
     // Show final score toast
     toast(`Game Over! Final Score: £${score}`, {
       duration: 3000,
@@ -136,27 +141,54 @@ const Index = () => {
     setFallingItems([]);
     setJarPosition(window.innerWidth / 2);
     setIsGameOver(false);
+    setGameStarted(false);
+  };
+
+  const handleStartGame = () => {
+    setGameStarted(true);
+    setScore(0);
+    setFallingItems([]);
+    setIsGameOver(false);
   };
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-gradient-to-b from-purple-50 to-purple-100">
-      <Score score={score} />
-      <Timer duration={GAME_DURATION} onComplete={handleGameOver} />
+      {!gameStarted ? (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-8 bg-white/80">
+          <div className="max-w-md text-center space-y-6">
+            <h1 className="text-4xl font-bold text-purple-800">Swear Jar Challenge!</h1>
+            <p className="text-xl text-gray-700">
+              Catch as much money in your Swear Jar as possible, avoid those costly bills!
+            </p>
+            <Button 
+              onClick={handleStartGame}
+              className="text-2xl px-12 py-6 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
+            >
+              GO!
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <>
+          <Score score={score} />
+          <Timer duration={GAME_DURATION} onComplete={handleGameOver} />
 
-      {fallingItems.map((item) => (
-        <Money
-          key={item.id}
-          type={item.type}
-          position={item.position}
-          onFall={() => handleItemFall(item)}
-          description={itemDescriptions[item.type]}
-        />
-      ))}
+          {fallingItems.map((item) => (
+            <Money
+              key={item.id}
+              type={item.type}
+              position={item.position}
+              onFall={() => handleItemFall(item)}
+              description={itemDescriptions[item.type]}
+            />
+          ))}
 
-      <Jar
-        position={jarPosition}
-        onMove={handleMove}
-      />
+          <Jar
+            position={jarPosition}
+            onMove={handleMove}
+          />
+        </>
+      )}
 
       {isGameOver && <GameOver score={score} onRestart={handleRestart} />}
     </div>
