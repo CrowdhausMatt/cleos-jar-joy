@@ -53,11 +53,7 @@ const Index = () => {
     const jarLeft = jarPosition - JAR_WIDTH / 2;
     const jarRight = jarPosition + JAR_WIDTH / 2;
     
-    // Check for collision with jar
     if (fallingItem.position >= jarLeft && fallingItem.position <= jarRight) {
-      // Remove the item immediately
-      setFallingItems((prev) => prev.filter((item) => item.id !== fallingItem.id));
-      
       let pointsEarned = 0;
       
       if (fallingItem.type === "gold") {
@@ -75,6 +71,9 @@ const Index = () => {
         className: "w-auto text-sm",
       });
     }
+    
+    // Remove the item regardless of collision
+    setFallingItems((prev) => prev.filter((item) => item.id !== fallingItem.id));
   };
 
   const handleMove = (direction: "left" | "right") => {

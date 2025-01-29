@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 interface MoneyProps {
   type: "money" | "bill" | "car" | "tax" | "gold" | "swear";
@@ -23,17 +24,30 @@ const getRandomSwearWord = () => {
 };
 
 export const Money = ({ type, position, onFall, description }: MoneyProps) => {
+  const [isExploding, setIsExploding] = useState(false);
+
   return (
     <motion.div
       initial={{ y: -100 }}
       animate={{ y: "100vh" }}
       transition={{ duration: 3, ease: "linear" }}
-      onAnimationComplete={onFall}
+      onAnimationComplete={() => {
+        if (!isExploding) {
+          onFall();
+        }
+      }}
       className={cn(
         "absolute flex flex-col items-center gap-1",
+        isExploding && "animate-explode",
         type === "gold" && "animate-coin-spin"
       )}
       style={{ left: position }}
+      onCollisionStart={() => {
+        setIsExploding(true);
+        setTimeout(() => {
+          onFall();
+        }, 500); // Match explosion animation duration
+      }}
     >
       <span className="text-3xl">
         {type === "swear" ? getRandomSwearWord() : itemIcons[type]}

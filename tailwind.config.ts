@@ -76,12 +76,23 @@ export default {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(var(--slide-distance))" },
         },
+        "explode": {
+          "0%": { 
+            transform: "scale(1)",
+            opacity: "1"
+          },
+          "100%": { 
+            transform: "scale(2)",
+            opacity: "0"
+          }
+        }
       },
       animation: {
         "money-fall": "money-fall 3s linear",
         "jar-bounce": "jar-bounce 0.5s ease-in-out",
         "coin-spin": "coin-spin 1s linear infinite",
         "jar-slide": "jar-slide 0.3s ease-out",
+        "explode": "explode 0.5s ease-out forwards"
       },
     },
   },
