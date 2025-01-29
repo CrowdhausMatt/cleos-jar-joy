@@ -30,6 +30,7 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
 
   useEffect(() => {
     const startAnimation = async () => {
+      console.log("Starting animation from y=0 to y=", window.innerHeight);
       await controls.start({
         y: [0, window.innerHeight],
         transition: { 
@@ -37,6 +38,7 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
         }
       });
       
+      console.log("Animation complete, isExploding:", isExploding);
       if (!isExploding) {
         onFall();
       }
@@ -46,6 +48,7 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
   }, [controls, onFall, isExploding]);
 
   const handleCollision = () => {
+    console.log("Collision detected!");
     setIsExploding(true);
     controls.stop();
     onFall();
@@ -79,6 +82,10 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
         const itemX = position;
         const itemY = latest.y;
 
+        // Log positions for debugging
+        console.log("Item position:", { x: itemX, y: itemY });
+        console.log("Jar position:", { x: jarX, y: jarY });
+
         // Draw debug rectangle for jar (using DOM)
         let debugJar = document.getElementById('debug-jar');
         if (!debugJar) {
@@ -100,6 +107,7 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
             itemX + ITEM_WIDTH > jarX &&
             itemY < jarY + JAR_HEIGHT &&
             itemY + ITEM_HEIGHT > jarY) {
+          console.log("Collision check passed!");
           handleCollision();
         }
       }}
