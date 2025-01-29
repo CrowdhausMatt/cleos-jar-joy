@@ -15,7 +15,7 @@ interface FallingItem {
   position: number;
 }
 
-const GAME_DURATION = 30; // Changed from 60 to 30 seconds
+const GAME_DURATION = 30;
 const JAR_WIDTH = 96;
 const SPAWN_INTERVAL = 1000;
 const MOVE_STEP = 50;
