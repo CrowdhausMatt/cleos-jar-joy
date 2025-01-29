@@ -72,11 +72,16 @@ export default {
           "0%": { transform: "rotateY(0deg)" },
           "100%": { transform: "rotateY(360deg)" },
         },
+        "jar-slide": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(var(--slide-distance))" },
+        },
       },
       animation: {
         "money-fall": "money-fall 3s linear",
         "jar-bounce": "jar-bounce 0.5s ease-in-out",
         "coin-spin": "coin-spin 1s linear infinite",
+        "jar-slide": "jar-slide 0.3s ease-out",
       },
     },
   },
