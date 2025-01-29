@@ -13,6 +13,7 @@ const Index = () => {
     fallingItems,
     jarPosition,
     gameStarted,
+    timeLeft,
     setGameStarted,
     setIsGameOver,
     handleItemFall,
@@ -75,6 +76,7 @@ const Index = () => {
           <Jar
             position={jarPosition}
             onMove={handleMove}
+            timeLeft={timeLeft}
           />
         </>
       )}

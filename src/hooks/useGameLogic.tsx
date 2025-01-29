@@ -21,7 +21,8 @@ export const itemDescriptions = {
   piggy: "Savings"
 };
 
-const JAR_WIDTH = 96; // Define the constant
+const JAR_WIDTH = 96;
+const GAME_DURATION = 30; // 30 seconds game duration
 
 export const useGameLogic = () => {
   const [score, setScore] = useState(0);
@@ -29,6 +30,7 @@ export const useGameLogic = () => {
   const [fallingItems, setFallingItems] = useState<FallingItem[]>([]);
   const [jarPosition, setJarPosition] = useState(window.innerWidth / 2);
   const [gameStarted, setGameStarted] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
 
   const spawnItem = () => {
     const types: ItemType[] = ["money", "bill", "car", "tax", "swear", "eye", "flowers", "piggy"];
@@ -94,6 +96,32 @@ export const useGameLogic = () => {
     });
   };
 
+  // Timer effect
+  useEffect(() => {
+    if (!gameStarted || isGameOver) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          setIsGameOver(true);
+          setGameStarted(false);
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [gameStarted, isGameOver]);
+
+  useEffect(() => {
+    if (!gameStarted || isGameOver) return;
+
+    const interval = setInterval(spawnItem, 1000);
+    return () => clearInterval(interval);
+  }, [isGameOver, gameStarted]);
+
   useEffect(() => {
     if (!gameStarted) return;
 
@@ -109,23 +137,17 @@ export const useGameLogic = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [gameStarted]);
 
-  useEffect(() => {
-    if (!gameStarted || isGameOver) return;
-
-    const interval = setInterval(spawnItem, 1000);
-    return () => clearInterval(interval);
-  }, [isGameOver, gameStarted]);
-
   return {
     score,
     isGameOver,
     fallingItems,
     jarPosition,
     gameStarted,
+    timeLeft,
     setGameStarted,
     setIsGameOver,
     handleItemFall,
     handleMove,
-    setScore
+    setScore,
   };
 };
