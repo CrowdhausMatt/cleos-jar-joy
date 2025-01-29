@@ -101,8 +101,14 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
     <motion.div
       id={`falling-item-${type}-${position}`}
       initial={{ y: -100 }}
-      animate={{ y: window.innerHeight }}
-      transition={{ duration: 3, ease: "linear" }}
+      animate={{ 
+        y: window.innerHeight,
+        rotate: type === "gold" ? [0, 360] : 0
+      }}
+      transition={{ 
+        y: { duration: 3, ease: "linear" },
+        rotate: { duration: 1, repeat: Infinity, ease: "linear" }
+      }}
       onAnimationComplete={() => {
         if (!isExploding) {
           onFall();
@@ -110,8 +116,7 @@ export const Money = ({ type, position, onFall, description }: MoneyProps) => {
       }}
       className={cn(
         "absolute flex flex-col items-center gap-1",
-        isExploding && "animate-explode",
-        type === "gold" && "animate-coin-spin"
+        isExploding && "animate-explode"
       )}
       style={{ 
         left: position,
