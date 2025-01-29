@@ -21,7 +21,10 @@ export const Jar = ({ position }: JarProps) => {
           "before:content-[''] before:absolute before:top-2 before:left-1/2 before:-translate-x-1/2",
           "before:w-16 before:h-4 before:bg-white/20 before:rounded-full",
           "after:content-[''] after:absolute after:top-[-10px] after:left-1/2 after:-translate-x-1/2",
-          "after:w-12 after:h-3 after:rounded-full after:after:bg-white/30"
+          "after:w-12 after:h-3 after:rounded-full after:after:bg-white/30",
+          // Debug: Add jar hitbox visualization
+          "jar-hitbox border-2 border-blue-500 border-opacity-50",
+          "bg-opacity-90"
         )}
       >
         <img 
